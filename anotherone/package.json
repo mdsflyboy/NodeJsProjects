@@ -1,0 +1,17 @@
+{
+  "name": "anotherone",
+  "version": "1.0.0",
+  "description": "Another one",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "supervisor ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "ejs": "^2.6.2",
+    "express": "^4.17.1"
+  }
+}
