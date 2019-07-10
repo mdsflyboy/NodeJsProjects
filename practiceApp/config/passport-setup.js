@@ -26,10 +26,10 @@ passport.use(
             User.findOne({googleId: profile.id}).then(
                 function (currentUser) {
                     //then
-                    console.log(profile);
+                    // console.log(profile);
                     if(currentUser){
                         //already have the user
-                        console.log('user is: ', currentUser);
+                        console.log('user is: ', currentUser.username);
                         done(null, currentUser);
                     }else{
                         //if not, create user in our db
@@ -38,7 +38,7 @@ passport.use(
                             googleId: profile.id,
                             thumbnail: profile._json.picture
                         }).save().then((newUser) => {
-                            console.log('new user created: '+newUser);
+                            console.log('new user created: '+newUser.username);
                             done(null, newUser);
                         });
                     }
