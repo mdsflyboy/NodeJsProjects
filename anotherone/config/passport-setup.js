@@ -1,5 +1,5 @@
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth2').Strategy();
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const keys = require('./keys');
 
 passport.serializeUser((user,  done) => {
@@ -15,11 +15,12 @@ passport.deserializeUser((user, done) => {
 
 passport.use(
     new GoogleStrategy({
-        clientId: keys.google.clientId,
+        clientID: keys.google.clientId,
         clientSecret: keys.google.clientSecret,
         callbackURL: '/auth/google/redirect'
     }, (accessToken, refreshToken, profile, done) => {
         // console.log(`User ${profile.username} logged in`);
         console.log(profile);
+        done(null, profile);
     })
-)
+);
