@@ -1,0 +1,15 @@
+{
+  "name": "nodebrowser",
+  "version": "1.0.0",
+  "description": "Using puppetier browser",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^1.18.1"
+  }
+}
