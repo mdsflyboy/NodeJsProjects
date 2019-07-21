@@ -9,7 +9,7 @@ app.set('view engine', 'ejs');
 
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(require('cookie-parser'));
+app.use(require('cookie-parser'));
 app.use('/dev', require('./routes/dev'));
 app.use('/auth', require('./routes/auth'));
 
