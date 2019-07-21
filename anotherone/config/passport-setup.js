@@ -28,6 +28,7 @@ passport.use(
         // let photo = photos.mediaItems.get(id);
         console.log(id);
         done(null, {
+            accessToken,
             profile,
             photos
         });

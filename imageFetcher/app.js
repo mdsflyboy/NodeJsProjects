@@ -6,7 +6,7 @@ const url = 'https://photos.app.goo.gl/qEifMVJiWQDtxWVg6';
 (async function main(){
     try{
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
         page.setUserAgent('Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36');
 
@@ -18,10 +18,6 @@ const url = 'https://photos.app.goo.gl/qEifMVJiWQDtxWVg6';
         await page.waitForSelector('.RY3tic');
         // await page.waitForNavigation();
         // await delay(10000);
-
-        // let previousHeight = await page.evaluate('document.body.scrollHeight');
-        // await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-        // await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
 
         const sections = await page.$$('.RY3tic');
         // console.log(sections.length);
@@ -48,10 +44,10 @@ const url = 'https://photos.app.goo.gl/qEifMVJiWQDtxWVg6';
         // }
         console.log(images);
 
-        // const section = await page.$('.RY3tic');
-        // const styleStuff = await page.evaluate((section) => {
-        //     return JSON.parse(JSON.stringify(getComputedStyle(section)));
-        // }, section);
+        const section = await page.$('.RY3tic');
+        const styleStuff = await page.evaluate((section) => {
+            return JSON.parse(JSON.stringify(getComputedStyle(section)));
+        }, section);
         // console.log(styleStuff.backgroundImage);
 
     }catch(e){

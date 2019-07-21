@@ -35,7 +35,15 @@
             <h1 class="display-3">Welcome <%=user.profile.displayName %></h1>
             <p class="lead">Thank you for logging in</p>
             <hr class="my-2">
-            <p>Here is some info about this</p>
+            <p>Here is your access token: <%=user.accessToken %></p>
+        </div>
+
+        <div class="row align-items-center">
+            <% for(image of images) { %>
+            <div class="col-xs-12 col-s-6 col-md-4, col-lg-4 align-center">
+                <img src="<%=image+'=h300' %>" class="img-thumbnail rounded mx-auto">
+            </div>
+            <% } %>
         </div>
     </div>
 

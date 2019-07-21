@@ -18,18 +18,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/dev', require('./routes/dev'));
 app.use('/auth', require('./routes/auth'));
+app.use('/profile', require('./routes/profile'));
 
 app.get('/', (req, res) => {
     res.render('home', {user: req.user});
-});
-
-app.get('/profile', (req, res) => {
-    if(!req.user){
-        res.redirect('/');
-    }
-    // let yourPhotos = await req.user.photos.albums.list(1);
-    // res.send(JSON.stringify(yourPhotos));
-    res.render('profile', {user: req.user});
 });
 
 app.listen(3250);
