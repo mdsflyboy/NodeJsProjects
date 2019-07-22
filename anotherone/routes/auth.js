@@ -19,7 +19,7 @@ router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
     // res.redirect('/');
     // console.log(req.user);
     // res.send(`Here is the access object: <br> ${JSON.stringify(req.user)}`);
-    res.redirect('/')
+    res.redirect('/profile')
 });
 
 module.exports = router;

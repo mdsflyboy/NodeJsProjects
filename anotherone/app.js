@@ -10,7 +10,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.use(cookieSession({
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 30 * 60 * 1000,
     keys: [keys.session.cookieKey]
 }));
 
@@ -21,6 +21,9 @@ app.use('/auth', require('./routes/auth'));
 app.use('/profile', require('./routes/profile'));
 
 app.get('/', (req, res) => {
+    if(req.user){
+        res.redirect('/profile');
+    }
     res.render('home', {user: req.user});
 });
 
