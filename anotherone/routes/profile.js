@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const api = require('../apiRequests');
+const path = require('path');
 
 router.get('/', (req, res) => {
     if(!req.user){
@@ -19,6 +20,10 @@ router.get('/album/:id', (req, res) => {
         res.render('profileAlbum', {user: req.user, images, albumId: req.params.id, nextPage: nextPageToken});
     }, 100);
 });
+
+router.get('/profileAlbum.js', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../views/profileAlbum.js'));
+})
 
 function handleErr(err, res){
     if(err && err === "Logout"){
