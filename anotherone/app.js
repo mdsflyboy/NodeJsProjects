@@ -7,6 +7,7 @@ const keys = require('./config/keys');
 
 const app = express();
 
+
 app.set('view engine', 'ejs');
 
 app.use(cookieSession({
@@ -16,9 +17,12 @@ app.use(cookieSession({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.json());
+
 app.use('/dev', require('./routes/dev'));
 app.use('/auth', require('./routes/auth'));
 app.use('/profile', require('./routes/profile'));
+app.use('/ajax', require('./routes/ajax'));
 
 app.get('/', (req, res) => {
     if(req.user){

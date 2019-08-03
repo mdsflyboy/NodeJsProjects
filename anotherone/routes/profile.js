@@ -18,7 +18,7 @@ router.get('/album/:id', (req, res) => {
     api.getImagesFromAlbum(req.user.accessToken, req.params.id, (err, images, nextPageToken) => {
         handleErr(err, res);
         res.render('profileAlbum', {user: req.user, images, albumId: req.params.id, nextPage: nextPageToken});
-    }, 100);
+    }, require('../config/constants').imagesPerPage);
 });
 
 router.get('/profileAlbum.js', (req, res) => {

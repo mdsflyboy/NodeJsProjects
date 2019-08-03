@@ -4,6 +4,11 @@ const accessToken = 'ya29.GltNBxj7ft7ig_D9k1KbReCcD4tc_E9gS_EZmyDrNViijHOB5Y2pv7
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
 
+let matt = {
+    name:"Matthew",
+    age:17
+};
+
 function checkForErrors(err, res, body) {
     if(err){
         console.log(err)
@@ -51,13 +56,13 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
     if(pageToken){
         var body = {
             pageSize,
-            albumId
+            albumId,
+            pageToken
         }
     }else{
         var body = {
             pageSize,
-            albumId,
-            pageToken
+            albumId
         }
     }
     const options = {
