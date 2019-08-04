@@ -8,14 +8,44 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
+
+      <style>
+      .border{
+        border-width:10px !important;
+      }
+      </style>
+    
   </head>
   <body>
+  
+    <script src="/javascript/index.js"></script>
+    <%# <script>
+      $(document).ready(() => {
+        alert("test");
+      });
+    </script> %>
 
     <div class="container">
         <div class="jumbotron vertical-center">
             <h1 class="display-3">Welcome</h1>
             <p class="lead">Helper text</p>
             <hr class="my-2">
+            
+            <div class="card text-left">
+              <button type="button" id="myBtn" class="btn border border-0">
+              <img src="https://s3.amazonaws.com/iconbros/icons/icon_pngs/000/000/192/original/like.png?1510256250" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+              </button>
+            </div>
+
+            <div id="selectedImages">
+            </div>
+
+
         </div>
     </div>
 
