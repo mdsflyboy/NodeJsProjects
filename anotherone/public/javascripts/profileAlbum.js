@@ -1,4 +1,38 @@
 $(function () {
+    let selectedImages = {};
+
+    $('#imageScroller').on('click', '.image' ,function(){
+        let id = $(this).attr("id");
+        // id = $(this);
+        $(this).toggleClass('emptyBorder');
+        $(this).toggleClass('border-primary');
+        let val = $(this).hasClass('border-primary');
+        selectedImages[id] = val;
+        // console.log($(this), id);
+        $('#textHolder').html(JSON.stringify(selectedImages));
+    });
+
+    $('#load').click(function(){
+        let imageArray = [];
+        for(let key in selectedImages){
+            if(selectedImages[key]){
+                imageArray.push(key);
+            }
+        }
+        // console.log(imageArray);
+        let data = {label:'rando', imageArray};
+        $.ajax({
+            url: '/ajax/photos/setLabel',
+            dataType: 'text',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(data, status) {
+                console.log(data);
+            }
+        });
+    });
+
     $('#imageScroller').scroll(() => {
         let imgScroll = $('#imageScroller');
         const scrolled = imgScroll.scrollTop();
@@ -24,14 +58,15 @@ $(function () {
                     res.images.forEach((image, index, array) => {
                         output += `
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <a href="${image.productUrl}" target="_blank">
-                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-thumbnail \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}">
-                            </a>
+                            <button type="button" id="${image.id}" class="image btn border emptyBorder">
+                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-fluid \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+                            </button>
                         </div>
                         `;
                         counter++;
                         if(counter === array.length){
                             imgScroll.html(output);
+                            bindButtons();
                         }
                     });
                 }

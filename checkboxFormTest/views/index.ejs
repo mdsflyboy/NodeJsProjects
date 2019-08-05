@@ -12,13 +12,18 @@
     <script
       src="https://code.jquery.com/jquery-3.4.1.js"
       integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-      crossorigin="anonymous"></script>
+      crossorigin="anonymous">
+    </script>
 
-      <style>
-      .border{
-        border-width:10px !important;
-      }
-      </style>
+    <style>
+    .border{
+    border-width:10px !important;
+    };
+    .emptyBorder{
+    border-width:10px !important;
+    border-color:rgba(0,0,0,0) !important;
+    };
+    </style>
     
   </head>
   <body>
@@ -37,8 +42,13 @@
             <hr class="my-2">
             
             <div class="card text-left">
-              <button type="button" id="myBtn" class="btn border border-0">
+              <button type="button" id="myBtn" class="image btn border emptyBorder">
               <img src="https://s3.amazonaws.com/iconbros/icons/icon_pngs/000/000/192/original/like.png?1510256250" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+              </button>
+            </div>
+            <div class="card text-left">
+              <button type="button" id="crazyNun" class="image btn border emptyBorder">
+              <img src="https://c8.alamy.com/comp/EPF1YW/nun-with-handgun-isolated-on-white-EPF1YW.jpg" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
               </button>
             </div>
 

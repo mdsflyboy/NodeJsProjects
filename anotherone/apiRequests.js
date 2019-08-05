@@ -75,8 +75,15 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 
         let data = JSON.parse(body);
         let mediaItems = data.mediaItems;
+        let output = mediaItems.map((item) => {
+            return {
+                id:item.id,
+                productUrl:item.productUrl, 
+                baseUrl:item.baseUrl
+            };
+        })
         let nextPageToken = data.nextPageToken;
-        callback(error, mediaItems, nextPageToken);
+        callback(error, output, nextPageToken);
     }).auth(null,null,true, accessToken)
 };
 
