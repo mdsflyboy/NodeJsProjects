@@ -1,6 +1,7 @@
 const request = require('request');
+const fs = require('fs');
 
-const accessToken = 'ya29.GltNBxj7ft7ig_D9k1KbReCcD4tc_E9gS_EZmyDrNViijHOB5Y2pv7Ttv2srpRclMfCsrnaEabFS_w69jSUVKlgmDMwiNKv1My7wYlvV_O16tAhzRzPw-YN1lr6B';
+const accessToken = 'ya29.GlthB1MDi-bCzoNCO_BQ75vwUsoPiCb_igE02SVZoiK0l3R57aOwtEA6y97V0_BrSPTIy9Gm9vaitrPZl8BdERUDKcM5crp1OMebFQReWmtLo9bqB3v7UPpzzgdH';
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
 
@@ -75,6 +76,7 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 
         let data = JSON.parse(body);
         let mediaItems = data.mediaItems;
+        fs.writeFileSync('mediaItems.json',JSON.stringify(mediaItems, null, 2));
         let output = mediaItems.map((item) => {
             return {
                 id:item.id,
@@ -91,5 +93,32 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 // getImagesFromAlbum(accessToken, albumId, images => {
 //     console.log(images.length);
 // }, 100);
+
+let addEnrichment = function(albumId, imageId, text){
+    let url = `${baseUrl}/albums/${albumId}:addEnrichment`;
+    let body = {
+        newEnrichmentItem: {
+            textEnrichment:{
+                text
+            }
+        },
+        albumPosition: {
+            "position": "AFTER_MEDIA_ITEM",
+            "relativeMediaItemId": imageId
+        }
+    };
+    request({
+        url,
+        method: 'POST',
+        body: JSON.stringify(body)
+    }, (err, res, body) => {
+        let error = checkForErrors(err,res,body);
+
+        console.log(body);
+    }).auth(null,null,true,accessToken);
+};
+
+addEnrichment("ALjsKEWsRaHpWnAdinLf5ZwP0I-HZK7ur1TRoqViDZsPTaM5sAKQ8jrkMcX9LWTv1ZOjPx7XkKWlXdcS21C6OUK8hv09RtjcwA", 
+"ALjsKEUKAWNr6qP_GcOdZthJI1_X5yzBYBJuocFenXJebgDbfHa1YByGro_SWP_9tl6AB0aItUag", "test");
 
 module.exports = {getAlbums,getImagesFromAlbum};
