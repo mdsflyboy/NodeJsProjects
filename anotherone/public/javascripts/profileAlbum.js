@@ -1,40 +1,26 @@
-$(function () {
-    let selectedImages = {};
-
-    $('#imageScroller').on('click', '.image' ,function(){
-        let id = $(this).attr("id");
-        // id = $(this);
-        $(this).toggleClass('emptyBorder');
-        $(this).toggleClass('border-primary');
-        let val = $(this).hasClass('border-primary');
-        selectedImages[id] = val;
-        // console.log($(this), id);
-        $('#textHolder').html(JSON.stringify(selectedImages));
-    });
-
-    $('#load').click(function(){
-        let imageArray = [];
-        for(let key in selectedImages){
-            if(selectedImages[key]){
-                imageArray.push(key);
-            }
-        }
-        // console.log(imageArray);
-        let data = {label:'rando', imageArray};
-        $.ajax({
-            url: '/ajax/photos/setLabel',
-            dataType: 'text',
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(data, status) {
-                console.log(data);
-            }
+let loadLabels = function(){
+    $('.imageLink').toArray().forEach((image) => {
+        let use = $(image);
+        const id = use.attr('id');
+        fetch(`/ajax/labels/${id}`).then(
+        function(res) {
+            return res.json();
+        }).then((data) => {
+            use.html('');
+            data.labels.forEach((label)=>{
+                console.log(label);
+                use.append(`
+                    <li class="list-group-item disabled">${label}</li>
+                `);
+            });
         });
     });
+};
 
-    $('#imageScroller').scroll(() => {
-        let imgScroll = $('#imageScroller');
+$(document).ready(function () {
+    loadLabels();
+    $('#imageScroller').scroll(function() {
+        let imgScroll = $(this);
         const scrolled = imgScroll.scrollTop();
         const totalScroll = imgScroll.prop('scrollHeight') - imgScroll.prop('clientHeight');
         // console.log(scrolled, totalScroll);
@@ -56,11 +42,18 @@ $(function () {
                     let output = imgScroll.html();
                     let counter = 0;
                     res.images.forEach((image, index, array) => {
+                        // output += `
+                        // <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                        //     <button type="button" id="${image.id}" class="image btn border emptyBorder">
+                        //         <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-fluid \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+                        //     </button>
+                        // </div>
+                        // `;
                         output += `
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <button type="button" id="${image.id}" class="image btn border emptyBorder">
-                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-fluid \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </button>
+                            <a href="/profile/photo/${albumId}/${image.id}" class="image">
+                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-thumbnail \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+                            </a> 
                         </div>
                         `;
                         counter++;
@@ -74,4 +67,4 @@ $(function () {
             $.ajax(settings);
         }
     });
-})
+});

@@ -57,27 +57,36 @@
             <p class="lead">Thank you for logging in</p>
             <hr class="my-2">
             <div class="row">
-                <div class="col-12">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 my-2">
+                    <ul class="list-group">
+                        <li class="list-group-item active">Active item</li>
+                        <li class="list-group-item">Item</li>
+                    </ul>
+                </div>
+                <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div id="imageScroller" class="row pre-scrollable">
                     <% for(image of images) { %>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image border emptyBorder">
-                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-thumbnail ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </a> 
+                            <div class="card my-1">
+                                <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image">
+                                    <img src="<%= image.baseUrl +'=w500-h300'%>" id="<%= image.id %>" class="card-img-top" alt="">
+                                </a> 
+                                <div class="card-body">
+                                    <h5>Labels:</h5>
+                                    <ul class="list-group list-group-flush py-6 imageLabels" id="<%= image.id %>">
+                                        <%# <li class="list-group-item disabled">Disabled item</li> %>
+                                    </ul>
+                                </div>
+                            </div>
                             <% /* %>
-                            <button type="button" id="<%= image.id %>" class="image btn border emptyBorder">
-                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </button>
+                            <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image"> 
+                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-thumbnail ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} my-1" alt=""> 
+                            </a> 
                             <% */ %>
                         </div>
                     <% } %>
                     </div>
                 </div>
-                <%# <div class="col-3"> %>
-                    <%# <button type="button" id="load" class="btn btn-primary">Load</button> %>
-                    <%# <div id="textHolder" class="pre-scrollable"> %>
-                    <%# </div> %>
-                <%# </div> %>
             </div>
         </div>
         </div>
@@ -93,6 +102,6 @@
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
-    <%# <script type="text/javascript" src="/javascripts/profileAlbum.js"></script> %>
+    <script type="text/javascript" src="/javascripts/profileAlbum.js"></script>
 </body>
 </html>
