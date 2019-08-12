@@ -4,10 +4,20 @@ const db = require('../db');
 router.get('/:id', (req, res) => {
     db.getDb().findOne({photoId:req.params.id}, function(err, result){
         console.log(`
-        error: ${err}
-        labels: ${JSON.stringify(result.labels)}
-        `);
-        res.json(result.labels);
+            error: ${err},
+            result: ${result}
+        `)
+        if(err || !result){
+            res.send(JSON.stringify({
+                message: "could not retrieve labels"
+            }));
+        }else{
+            res.json(result.labels);
+        }
+        // console.log(`
+        // error: ${err}
+        // labels: ${JSON.stringify(result.labels)}
+        // `);
     });
 });
 

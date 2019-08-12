@@ -1,18 +1,34 @@
+let labels = [];
+
 let loadLabels = function(){
-    $('.imageLink').toArray().forEach((image) => {
-        let use = $(image);
-        const id = use.attr('id');
+    $('.imageLabels').each(function(index){
+        const id = $(this).attr('id');
+        // console.log(`index: ${index}`);
         fetch(`/ajax/labels/${id}`).then(
         function(res) {
             return res.json();
         }).then((data) => {
-            use.html('');
-            data.labels.forEach((label)=>{
+            $(this).html('');
+            let itemsProcessed = 0;
+            data.forEach((label, index, array)=>{
                 console.log(label);
-                use.append(`
+                if(!labels.includes(label)){
+                    labels.push(label);
+                }
+                $(this).append(`
                     <li class="list-group-item disabled">${label}</li>
                 `);
+                itemsProcessed++;
+                if(itemsProcessed === array.length){
+                    $('#labelTracker').html('');
+                    labels.forEach(function(label){
+                        $('#labelTracker').append(`
+                            <li class="list-group-item">${label}</li>
+                        `);
+                    })
+                }
             });
+        }).catch(function(err){
         });
     });
 };
