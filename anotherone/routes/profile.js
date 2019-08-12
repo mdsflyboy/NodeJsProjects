@@ -2,6 +2,8 @@ const router = require('express').Router();
 const api = require('../apiRequests');
 const path = require('path');
 
+const db = require('../db');
+
 router.get('/', (req, res) => {
     if(!req.user){
         res.redirect('/');
@@ -21,6 +23,16 @@ router.get('/album/:id', (req, res) => {
         handleErr(err, res);
         res.render('profileAlbum', {user: req.user, images, albumId: req.params.id, nextPage: nextPageToken});
     }, require('../config/constants').imagesPerPage);
+});
+
+router.get('/photo/:albumId/:photoId', (req, res) => {
+    let albumId = req.params.albumId;
+    let user = req.user;
+    handleErr(req.user.accessToken, res);
+    api.getPhoto(req.user.accessToken, req.params.photoId, function(err, photo){
+        handleErr(err, res);
+        res.render('profileImage', {user,albumId: req.params.albumId,photo});
+    });
 });
 
 function handleErr(accessToken, res){

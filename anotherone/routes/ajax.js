@@ -23,10 +23,6 @@ router.get('/photos/:album/:page', (req, res) => {
     },require('../config/constants').imagesPerPage, page);
 });
 
-router.post('/photos/setLabel', (req, res) => {
-    res.send(req.body);
-    // res.send('Hi');
-});
-
+router.use('/labels', require('./labels'));
 
 module.exports=router;

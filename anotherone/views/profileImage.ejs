@@ -22,10 +22,8 @@
             border-color:rgba(0,0,0,0) !important;
         }
     </style>
-
     <script>
-        var nextPageToken = '<%= nextPage%>';
-        // console.log(nextPageToken);
+        const photoId = "<%= photo.id %>";
     </script>
 </head>
 <body>
@@ -52,34 +50,28 @@
         </nav>
 
         <div class="jumbotron">
-            <a name="back" id="back" class="btn btn-primary" href="/profile" role="button">Back</a>
-            <h1 class="display-5">Welcome <%=user.profile.displayName %></h1>
-            <p class="lead">Thank you for logging in</p>
-            <hr class="my-2">
+            <a name="back" id="back" class="btn btn-primary" href="/profile/album/<%=albumId%>" role="button">Back</a>
             <div class="row">
-                <div class="col-12">
-                    <div id="imageScroller" class="row pre-scrollable">
-                    <% for(image of images) { %>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image border emptyBorder">
-                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-thumbnail ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </a> 
-                            <% /* %>
-                            <button type="button" id="<%= image.id %>" class="image btn border emptyBorder">
-                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </button>
-                            <% */ %>
-                        </div>
-                    <% } %>
-                    </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <img src="<%=photo.baseUrl%>" class="center img-thumbnail ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
                 </div>
-                <%# <div class="col-3"> %>
-                    <%# <button type="button" id="load" class="btn btn-primary">Load</button> %>
-                    <%# <div id="textHolder" class="pre-scrollable"> %>
-                    <%# </div> %>
-                <%# </div> %>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <form id="newLabelForm">
+                        <div class="form-row">
+                            <div class="col">
+                                <%# <label for="newLabel">New Label</label> %>
+                                <input type="text" name="newLabel" id="newLabelInput" class="form-control" placeholder="New Label" aria-describedby="helpId">
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                    <ul class="list-group my-5" id="labels">
+                        <%# <li class="list-group-item"></li>  %>
+                    </ul>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 
@@ -93,6 +85,6 @@
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
-    <%# <script type="text/javascript" src="/javascripts/profileAlbum.js"></script> %>
+    <script type="text/javascript" src="/javascripts/profileImage.js"></script>
 </body>
 </html>

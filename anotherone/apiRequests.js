@@ -1,14 +1,9 @@
 const request = require('request');
 const fs = require('fs');
 
-const accessToken = 'ya29.GlthB1MDi-bCzoNCO_BQ75vwUsoPiCb_igE02SVZoiK0l3R57aOwtEA6y97V0_BrSPTIy9Gm9vaitrPZl8BdERUDKcM5crp1OMebFQReWmtLo9bqB3v7UPpzzgdH';
+const accessToken = 'ya29.GlthB9gTZEMAF_MzRUBn1mRaVZt9kEWttnwCoEi476OupSpLfyD7g4pz0CgFGcyMLgG1YL-K0iDdho3Qq9KUillqFa-IKfVNMS7lEFNkg0D6YycmTp2XPT9vZESp';
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
-
-let matt = {
-    name:"Matthew",
-    age:17
-};
 
 function checkForErrors(err, res, body) {
     if(err){
@@ -94,31 +89,19 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 //     console.log(images.length);
 // }, 100);
 
-let addEnrichment = function(albumId, imageId, text){
-    let url = `${baseUrl}/albums/${albumId}:addEnrichment`;
-    let body = {
-        newEnrichmentItem: {
-            textEnrichment:{
-                text
-            }
-        },
-        albumPosition: {
-            "position": "AFTER_MEDIA_ITEM",
-            "relativeMediaItemId": imageId
-        }
-    };
-    request({
-        url,
-        method: 'POST',
-        body: JSON.stringify(body)
-    }, (err, res, body) => {
-        let error = checkForErrors(err,res,body);
-
-        console.log(body);
+let getPhoto = function(accessToken, photoId, callback){
+    url=`${baseUrl}/mediaItems/${photoId}`;
+    request(url, (err, res, body)=>{
+        let error = checkForErrors(err, res, body);
+        let photo = JSON.parse(body);
+        photo = {id:photo.id, baseUrl:photo.baseUrl, productUrl:photo.productUrl};
+        callback(error, photo);
     }).auth(null,null,true,accessToken);
 };
 
-addEnrichment("ALjsKEWsRaHpWnAdinLf5ZwP0I-HZK7ur1TRoqViDZsPTaM5sAKQ8jrkMcX9LWTv1ZOjPx7XkKWlXdcS21C6OUK8hv09RtjcwA", 
-"ALjsKEUKAWNr6qP_GcOdZthJI1_X5yzBYBJuocFenXJebgDbfHa1YByGro_SWP_9tl6AB0aItUag", "test");
+// getPhoto(accessToken, "ALjsKEVpN4rMLpJeOOKVmWatWa1dC3LRJDO2S65-42pmBtFID7vsr6vE_f9KDIK-tiB4OrJZ5vlo",
+// function(data){
+//     console.log(data);
+// });
 
-module.exports = {getAlbums,getImagesFromAlbum};
+module.exports = {getPhoto, getAlbums,getImagesFromAlbum};
