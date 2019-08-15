@@ -23,4 +23,6 @@ router.get('/photos/:album/:page', (req, res) => {
     },require('../config/constants').imagesPerPage, page);
 });
 
+router.use('/labels', require('./labels'));
+
 module.exports=router;

@@ -1,13 +1,9 @@
 const request = require('request');
+const fs = require('fs');
 
-const accessToken = 'ya29.GltNBxj7ft7ig_D9k1KbReCcD4tc_E9gS_EZmyDrNViijHOB5Y2pv7Ttv2srpRclMfCsrnaEabFS_w69jSUVKlgmDMwiNKv1My7wYlvV_O16tAhzRzPw-YN1lr6B';
+const accessToken = 'ya29.GlthB9gTZEMAF_MzRUBn1mRaVZt9kEWttnwCoEi476OupSpLfyD7g4pz0CgFGcyMLgG1YL-K0iDdho3Qq9KUillqFa-IKfVNMS7lEFNkg0D6YycmTp2XPT9vZESp';
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
-
-let matt = {
-    name:"Matthew",
-    age:17
-};
 
 function checkForErrors(err, res, body) {
     if(err){
@@ -75,8 +71,16 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 
         let data = JSON.parse(body);
         let mediaItems = data.mediaItems;
+        fs.writeFileSync('mediaItems.json',JSON.stringify(mediaItems, null, 2));
+        let output = mediaItems.map((item) => {
+            return {
+                id:item.id,
+                productUrl:item.productUrl, 
+                baseUrl:item.baseUrl
+            };
+        })
         let nextPageToken = data.nextPageToken;
-        callback(error, mediaItems, nextPageToken);
+        callback(error, output, nextPageToken);
     }).auth(null,null,true, accessToken)
 };
 
@@ -85,4 +89,19 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
 //     console.log(images.length);
 // }, 100);
 
-module.exports = {getAlbums,getImagesFromAlbum};
+let getPhoto = function(accessToken, photoId, callback){
+    url=`${baseUrl}/mediaItems/${photoId}`;
+    request(url, (err, res, body)=>{
+        let error = checkForErrors(err, res, body);
+        let photo = JSON.parse(body);
+        photo = {id:photo.id, baseUrl:photo.baseUrl, productUrl:photo.productUrl};
+        callback(error, photo);
+    }).auth(null,null,true,accessToken);
+};
+
+// getPhoto(accessToken, "ALjsKEVpN4rMLpJeOOKVmWatWa1dC3LRJDO2S65-42pmBtFID7vsr6vE_f9KDIK-tiB4OrJZ5vlo",
+// function(data){
+//     console.log(data);
+// });
+
+module.exports = {getPhoto, getAlbums,getImagesFromAlbum};

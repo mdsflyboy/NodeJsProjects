@@ -26,7 +26,7 @@ passport.use(
         let photos = new Photos(accessToken);
         let id = photos.albums.list(1);
         // let photo = photos.mediaItems.get(id);
-        console.log(id);
+        // console.log(id);
         done(null, {
             accessToken,
             profile,

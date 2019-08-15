@@ -1,9 +1,14 @@
 $(document).ready(function() {
     let selectedImages = {};
-    $('#myBtn').click(() => {
-        $('#myBtn').toggleClass("border-0");
-        $('#myBtn').toggleClass("border-primary");
-        selectedImages['myBtn'] = $('#myBtn').hasClass("border-primary");
+    $('.image').click(function(){
+        let id = $(this).attr('id');
+        // console.log(id);
+        // console.log(this);
+        // $(this).toggleClass("border-0");
+        $(this).toggleClass("emptyBorder");
+        $(this).toggleClass("border-primary");
+        let val = $(this).hasClass("border-primary")
+        selectedImages[id] = val;
         $('#selectedImages').html(JSON.stringify(selectedImages));
     });
 });
