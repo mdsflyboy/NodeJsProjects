@@ -1,4 +1,17 @@
 let labels = [];
+let clicked = {};
+
+let addClickEvents = function(){
+    $('.clickableLabels').click(function(){
+        $(this).toggleClass('active');
+        if($(this).hasClass('active')){
+            clicked[$(this).attr('id')] = $(this).attr('id');
+        }else{
+            delete clicked[$(this).attr('id')];
+        }
+        $('#clicked').html(JSON.stringify(clicked));
+    });
+}
 
 let loadLabels = function(){
     $('.imageLabels').each(function(index){
@@ -21,11 +34,22 @@ let loadLabels = function(){
                 itemsProcessed++;
                 if(itemsProcessed === array.length){
                     $('#labelTracker').html('');
-                    labels.forEach(function(label){
-                        $('#labelTracker').append(`
-                            <li class="list-group-item">${label}</li>
+                    let ctn = 0;
+                    labels.forEach(function(label, index, array){
+                            // <button type="button" class="btn" >
+                            // </button>
+                                // <li class="list-group-item">
+                                // </li>
+                        $('#labelTracker').append(` 
+                            <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action">
+                                ${label}
+                            </button>
                         `);
-                    })
+                        ctn++;
+                        if(ctn === array.length){
+                            addClickEvents();
+                        }
+                    });
                 }
             });
         }).catch(function(err){
@@ -58,19 +82,20 @@ $(document).ready(function () {
                     let output = imgScroll.html();
                     let counter = 0;
                     res.images.forEach((image, index, array) => {
-                        // output += `
-                        // <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                        //     <button type="button" id="${image.id}" class="image btn border emptyBorder">
-                        //         <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-fluid \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                        //     </button>
-                        // </div>
-                        // `;
                         output += `
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <a href="/profile/photo/${albumId}/${image.id}" class="image">
-                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-thumbnail \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </a> 
+                            <div class="card my-1">
+                                <a href="/profile/photo/${albumId}/${image.id}" class="image">
+                                    <img src="${image.baseUrl +'=w500-h300'}" id="${image.id}" class="card-img-top" alt="">
+                                </a> 
+                                <div class="card-body">
+                                    <h6>Labels:</h6>
+                                    <ul class="list-group list-group-flush py-6 imageLabels" id="${image.id}">
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+
                         `;
                         counter++;
                         if(counter === array.length){
