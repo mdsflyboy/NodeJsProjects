@@ -1,6 +1,12 @@
 let labels = [];
 let clicked = {};
 
+/*
+    1. If no labels are selected, load images in bulk from google
+    2. If labels are selected, load only the images in mongoDb with that label
+    3. Don't load images with ejs
+*/
+
 let addClickEvents = function(){
     $('.clickableLabels').click(function(){
         $(this).toggleClass('active');
