@@ -26,6 +26,24 @@ function imageLoader(albumId, image){
             `;
 }
 
+function labelSelectLoader(label){
+    let active = ''
+    if(clicked[label]){
+        active = 'active';
+    }
+    return  ` 
+                <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action ${active}">
+                    ${label}
+                </button>
+            `
+}
+
+function labelLoader(label){
+    return `
+        <li class="list-group-item disabled">${label}</li>
+    `;
+}
+
 let addScrollEvent = function(){
     this.triggered = false;
     $('#imageScroller').scroll(function() {
@@ -92,15 +110,7 @@ let loadLabelSelector = function(){
         console.log(labels);
         // labels.forEach(function (label){
         for(label in labels){
-            let active = ''
-            if(clicked[label]){
-                active = 'active';
-            }
-            $('#labelTracker').append(` 
-                <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action ${active}">
-                    ${label}
-                </button>
-            `);
+            $('#labelTracker').append(labelSelectLoader(label));
         }
     }).then(function(){
         addClickEvents();

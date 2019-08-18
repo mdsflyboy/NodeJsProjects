@@ -40,6 +40,23 @@ router.get('/photos/:album/:page', (req, res) => {
     },require('../config/constants').imagesPerPage, page);
 });
 
+router.get('/fullPhoto/:album', (req,res) =>{
+    let albumId = req.params.album;
+
+    requests.getImagesFromAlbum(req.user.accessToken, albumId, function(err, images, nextPageToken){
+        res.json({images, nextPageToken});
+    }, require('../config/constants').imagesPerPage);
+})
+
+router.get('/fullPhoto/:album/:page', (req,res) =>{
+    let albumId = req.params.album;
+    let page = req.params.page;
+
+    requests.getImagesFromAlbum(req.user.accessToken, albumId, function(err, images, nextPageToken){
+        res.json({images, nextPageToken});
+    }, require('../config/constants').imagesPerPage, page);
+});
+
 router.get('/photos/:album/withLabel/:label', (req, res) => {
     db.getDb().find({
         albumId: req.params.album,
@@ -62,6 +79,27 @@ router.get('/photos/:album/withLabel/:label', (req, res) => {
         });
     });
 });
+
+router.get('/photoIdsWithLabel/:albumId/:label', function(req, res){
+    db.getDb().find({
+        albumId: req.params.albumId,
+        labels: req.params.label
+    }).toArray(function(err, result){
+        if(result){
+            console.log(result);
+            let output = {};
+            let cnt = 0;
+            result.forEach(function(item, index, array){
+                output[item.photoId] = item.photoId;
+                cnt++;
+                if(cnt == array.length){
+                    console.log(output);
+                    res.json(output);
+                }
+            });
+        }
+    })
+})
 
 router.get('/album/:album/getLabels', function(req, res){
     db.getDb().find({albumId: req.params.album}).toArray(function(err, images){
