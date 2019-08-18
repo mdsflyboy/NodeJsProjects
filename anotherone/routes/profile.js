@@ -19,10 +19,11 @@ router.get('/', (req, res) => {
 
 router.get('/album/:id', (req, res) => {
     handleErr(req.user.accessToken, res);
-    api.getImagesFromAlbum(req.user.accessToken, req.params.id, (err, images, nextPageToken) => {
-        handleErr(err, res);
-        res.render('profileAlbum', {user: req.user, images, albumId: req.params.id, nextPage: nextPageToken});
-    }, require('../config/constants').imagesPerPage);
+    res.render('profileAlbum', {user: req.user, albumId: req.params.id});
+    // api.getImagesFromAlbum(req.user.accessToken, req.params.id, (err, images, nextPageToken) => {
+    //     handleErr(err, res);
+    //     res.render('profileAlbum', {user: req.user, images, albumId: req.params.id, nextPage: nextPageToken});
+    // }, require('../config/constants').imagesPerPage);
 });
 
 router.get('/photo/:albumId/:photoId', (req, res) => {
