@@ -1,11 +1,11 @@
-let labels = [];
 let clicked = {};
 const albumId = window.location.href.split('/')[5];
 
 /*
-    1. If no labels are selected, load images in bulk from google
-    2. If labels are selected, load only the images in mongoDb with that label
-    3. Don't load images with ejs
+    1. Fetch all the images from the server at once
+    2. store them in an object
+    3. add a refresh button to update the images
+    4. use client side code for filtering
 */
 
 
@@ -27,6 +27,7 @@ function imageLoader(albumId, image){
 }
 
 let addScrollEvent = function(){
+    this.triggered = false;
     $('#imageScroller').scroll(function() {
         // console.log(Object.keys(clicked).length);
         if(Object.keys(clicked).length > 0){
@@ -38,10 +39,15 @@ let addScrollEvent = function(){
         // console.log(scrolled, totalScroll);
 
         const percentScroll = scrolled/totalScroll;
-        console.log(percentScroll);
+        // console.log(percentScroll);
 
-        if(percentScroll >= 0.9){
-            loadImages();
+        if(percentScroll >= 0.9 && !triggered){
+            triggered = true;
+            console.log('triggered');
+            loadImages().then(function(){
+                console.log('finished');
+                triggered = false;
+            });
         }
     });
     console.log('adding scroll Event')
@@ -59,7 +65,7 @@ let addClickEvents = function(){
             }
         }else{
             delete clicked[id];
-            if(!Object.keys(clicked).length){
+            if(Object.keys(clicked).length === 0){
                 nextPageToken = '';
                 clearImages();
                 loadImages();
@@ -78,44 +84,57 @@ let clearImages = function(){
     $('#imageScroller').html('');
 }
 
+let loadLabelSelector = function(){
+    fetch(`/ajax/album/${albumId}/getLabels`).then(function(res){
+        $('#labelTracker').html('');
+        return res.json();
+    }).then(function(labels){
+        console.log(labels);
+        // labels.forEach(function (label){
+        for(label in labels){
+            let active = ''
+            if(clicked[label]){
+                active = 'active';
+            }
+            $('#labelTracker').append(` 
+                <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action ${active}">
+                    ${label}
+                </button>
+            `);
+        }
+    }).then(function(){
+        addClickEvents();
+    });
+}
+
 let loadLabels = function(){
     $('.imageLabels').each(function(index){
         const id = $(this).attr('id');
         // console.log(`index: ${index}`);
-        fetch(`/ajax/labels/${id}`).then(
-        function(res) {
+        fetch(`/ajax/labels/${id}`).then(function(res) {
             return res.json();
         }).then((data) => {
-            $(this).html('');
             let itemsProcessed = 0;
+            if(data.message){
+                throw "No labels";
+            }
+            console.log(data);
+            $(this).html('');
             data.forEach((label, index, array)=>{
                 console.log(label);
-                if(!labels.includes(label)){
-                    labels.push(label);
-                }
                 $(this).append(`
                     <li class="list-group-item disabled">${label}</li>
                 `);
                 itemsProcessed++;
-                if(itemsProcessed === array.length){
-                    $('#labelTracker').html('');
-                    let ctn = 0;
-                    labels.forEach(function(label, index, array){
-                        let active = ''
-                        if(clicked[label]){
-                            active = 'active';
-                        }
-                        $('#labelTracker').append(` 
-                            <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action ${active}">
-                                ${label}
-                            </button>
-                        `);
-                        ctn++;
-                        if(ctn === array.length){
-                            addClickEvents();
-                        }
-                    });
-                }
+                // if(itemsProcessed === array.length){
+                    // let ctn = 0;
+                    // labels.forEach(function(label, index, array){
+                    //     ctn++;
+                    //     if(ctn === array.length){
+                    //         addClickEvents();
+                    //     }
+                    // });
+                // }
             });
         }).catch(function(err){
         });
@@ -124,7 +143,11 @@ let loadLabels = function(){
 
 let loadImages = function(){
     // fetch(`/ajax/photos/${albumId}/${nextPageToken}`).then(function(res){
-    fetch(`/ajax/photos/${albumId}/${nextPageToken}`).then(function(res){
+    return fetch(`/ajax/photos/${albumId}/${nextPageToken}`).then(function(res){
+        if(nextPageToken===''){
+            loadLabelSelector();
+            // addClickEvents();
+        }
         return res.json();
     }).then(function(msg){
         let cnt = 0;
@@ -145,6 +168,8 @@ let loadImages = function(){
 let loadImagesWithLabel = function(label){
     let url = `/ajax/photos/${albumId}/withLabel/${label}`;
     fetch(url).then(function(res){
+        loadLabelSelector();
+        // addClickEvents();
         return res.json();
     }).then(function(images){
         let output = '';
@@ -162,5 +187,6 @@ let loadImagesWithLabel = function(label){
 }
 
 $(document).ready(function () {
+    // loadLabelSelector();
     loadImages();
 });
