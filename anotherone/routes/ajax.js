@@ -93,7 +93,7 @@ router.get('/photoIdsWithLabel/:albumId/:label', function(req, res){
                 output[item.photoId] = item.photoId;
                 cnt++;
                 if(cnt == array.length){
-                    console.log(output);
+                    // console.log(output);
                     res.json(output);
                 }
             });
