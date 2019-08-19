@@ -36,9 +36,11 @@ let getAlbums = function (accessToken, callback, pageSize=50){
         }else{
             let data = JSON.parse(body).albums;
             let albums = [];
-            for(album of data){
-                let {id, title, mediaItemsCount} = album;
-                albums.push({id, title, mediaItemsCount});
+            if(data){
+                for(album of data){
+                    let {id, title, mediaItemsCount} = album;
+                    albums.push({id, title, mediaItemsCount});
+                }
             }
             callback(null, albums);
         }
