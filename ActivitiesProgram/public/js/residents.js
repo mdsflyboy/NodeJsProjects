@@ -51,7 +51,7 @@ let loadResidents = function(){
 let addDelEvent = function(){
     $('.deleteBtn').click(function(){
         let id = $(this).attr('id');
-        fetch(`/ajax/delResident/${id}`, {
+        fetch(`/ajax/residents/delete/${id}`, {
             method: 'delete'
         }).then(function(res){
             return res.json();
@@ -75,7 +75,7 @@ $(document).ready(function(){
             RoomNumber: $('#RoomNumber').val()
         };
         console.log(JSON.stringify(body));
-        fetch('/ajax/newResident', {
+        fetch('/ajax/residents/new', {
             method: 'post',
             headers: {
                 "Content-Type": "application/json"
