@@ -40,7 +40,7 @@ db.connect((err)=>{
         console.log('could not connect to db');
         process.exit(1);
     }else{
-        app.listen(3250, ()=>{
+        app.listen(80, ()=>{
             console.log('connected to db, app listening');
         });
     }
