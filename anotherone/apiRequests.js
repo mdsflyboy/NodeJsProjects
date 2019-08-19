@@ -1,6 +1,8 @@
 const request = require('request');
 const fs = require('fs');
 
+const db = require('./db');
+
 const accessToken = 'ya29.GlthB9gTZEMAF_MzRUBn1mRaVZt9kEWttnwCoEi476OupSpLfyD7g4pz0CgFGcyMLgG1YL-K0iDdho3Qq9KUillqFa-IKfVNMS7lEFNkg0D6YycmTp2XPT9vZESp';
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
@@ -34,9 +36,11 @@ let getAlbums = function (accessToken, callback, pageSize=50){
         }else{
             let data = JSON.parse(body).albums;
             let albums = [];
-            for(album of data){
-                let {id, title, mediaItemsCount} = album;
-                albums.push({id, title, mediaItemsCount});
+            if(data){
+                for(album of data){
+                    let {id, title, mediaItemsCount} = album;
+                    albums.push({id, title, mediaItemsCount});
+                }
             }
             callback(null, albums);
         }
@@ -72,15 +76,30 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
         let data = JSON.parse(body);
         let mediaItems = data.mediaItems;
         fs.writeFileSync('mediaItems.json',JSON.stringify(mediaItems, null, 2));
-        let output = mediaItems.map((item) => {
-            return {
-                id:item.id,
-                productUrl:item.productUrl, 
-                baseUrl:item.baseUrl
-            };
-        })
-        let nextPageToken = data.nextPageToken;
-        callback(error, output, nextPageToken);
+        db.getDb().find({
+            albumId
+        }).toArray(function(err, result){
+            let objResult = result.reduce(function(objResult, item){
+                objResult[item.photoId] = item;
+                return objResult;
+            }, {});
+            console.log("resutl: ",objResult);
+            let output = mediaItems.map((item) => {
+                let inOutput = {
+                    id:item.id,
+                    productUrl:item.productUrl, 
+                    baseUrl:item.baseUrl
+                };
+                if(objResult[item.id]){
+                    inOutput.labels = objResult[item.id].labels;
+                    // console.log('inOutput: ', inOutput);
+                }
+                return inOutput;
+            });
+            let nextPageToken = data.nextPageToken;
+            callback(error, output, nextPageToken);
+        });
+        
     }).auth(null,null,true, accessToken)
 };
 
@@ -95,7 +114,16 @@ let getPhoto = function(accessToken, photoId, callback){
         let error = checkForErrors(err, res, body);
         let photo = JSON.parse(body);
         photo = {id:photo.id, baseUrl:photo.baseUrl, productUrl:photo.productUrl};
-        callback(error, photo);
+        db.getDb().findOne({
+            photoId: photo.id
+        }, function(error, result){
+            if(result && result.labels){
+                photo.labels = result.labels;
+                callback(error, photo);
+            }else{
+                callback(error, photo);
+            }
+        })
     }).auth(null,null,true,accessToken);
 };
 

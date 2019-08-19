@@ -1,41 +1,56 @@
-let labels = [];
+let clicked = {};
+const albumId = window.location.href.split('/')[5];
 
-let loadLabels = function(){
-    $('.imageLabels').each(function(index){
-        const id = $(this).attr('id');
-        // console.log(`index: ${index}`);
-        fetch(`/ajax/labels/${id}`).then(
-        function(res) {
-            return res.json();
-        }).then((data) => {
-            $(this).html('');
-            let itemsProcessed = 0;
-            data.forEach((label, index, array)=>{
-                console.log(label);
-                if(!labels.includes(label)){
-                    labels.push(label);
-                }
-                $(this).append(`
-                    <li class="list-group-item disabled">${label}</li>
-                `);
-                itemsProcessed++;
-                if(itemsProcessed === array.length){
-                    $('#labelTracker').html('');
-                    labels.forEach(function(label){
-                        $('#labelTracker').append(`
-                            <li class="list-group-item">${label}</li>
-                        `);
-                    })
-                }
-            });
-        }).catch(function(err){
-        });
-    });
-};
+/*
+    1. Fetch all the images from the server at once
+    2. store them in an object
+    3. add a refresh button to update the images
+    4. use client side code for filtering
+*/
 
-$(document).ready(function () {
-    loadLabels();
+
+function imageLoader(albumId, image){
+    return `
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                    <div class="card my-1">
+                        <a href="/profile/photo/${albumId}/${image.id}" class="image">
+                            <img src="${image.baseUrl +'=w500-h300'}" id="${image.id}" class="card-img-top" alt="">
+                        </a> 
+                        <div class="card-body">
+                            <h6>Labels:</h6>
+                            <ul class="list-group list-group-flush py-6 imageLabels" id="${image.id}">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+}
+
+function labelSelectLoader(label){
+    let active = ''
+    if(clicked[label]){
+        active = 'active';
+    }
+    return  ` 
+                <button type="button" id="${label}" class="clickableLabels list-group-item list-group-item-action ${active}">
+                    ${label}
+                </button>
+            `
+}
+
+function labelLoader(label){
+    return `
+        <li class="list-group-item disabled">${label}</li>
+    `;
+}
+
+let addScrollEvent = function(){
+    this.triggered = false;
     $('#imageScroller').scroll(function() {
+        // console.log(Object.keys(clicked).length);
+        if(Object.keys(clicked).length > 0){
+            return;
+        }
         let imgScroll = $(this);
         const scrolled = imgScroll.scrollTop();
         const totalScroll = imgScroll.prop('scrollHeight') - imgScroll.prop('clientHeight');
@@ -44,43 +59,144 @@ $(document).ready(function () {
         const percentScroll = scrolled/totalScroll;
         // console.log(percentScroll);
 
-        if(percentScroll == 1){
-            // alert(`You've reached the bottom! `);
-            let albumId = window.location.href.split('/')[5];
-            // console.log(albumId);
-            let url = `/ajax/photos/${albumId}/${nextPageToken}`;
-            console.log(nextPageToken,url);
-            const settings = {
-                url,
-                contentType: 'application/json',
-                success: function(res){
-                    nextPageToken = res.nextPageToken;
-                    let output = imgScroll.html();
-                    let counter = 0;
-                    res.images.forEach((image, index, array) => {
-                        // output += `
-                        // <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                        //     <button type="button" id="${image.id}" class="image btn border emptyBorder">
-                        //         <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-fluid \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                        //     </button>
-                        // </div>
-                        // `;
-                        output += `
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <a href="/profile/photo/${albumId}/${image.id}" class="image">
-                                <img src="${image.baseUrl + '=w500-h200'}" height="100" id="${image.id}" class="img-thumbnail \${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
-                            </a> 
-                        </div>
-                        `;
-                        counter++;
-                        if(counter === array.length){
-                            imgScroll.html(output);
-                            bindButtons();
-                        }
-                    });
-                }
-            }
-            $.ajax(settings);
+        if(percentScroll >= 0.9 && !triggered){
+            triggered = true;
+            console.log('triggered');
+            loadImages().then(function(){
+                console.log('finished');
+                triggered = false;
+            });
         }
     });
+    console.log('adding scroll Event')
+};
+
+let addClickEvents = function(){
+    $('.clickableLabels').one('click',function(){
+        $(this).toggleClass('active');
+        let id = $(this).attr('id')
+        if($(this).hasClass('active')){
+            clicked[id] = id;
+            clearImages();
+            for(label in clicked){
+                loadImagesWithLabel(label);
+            }
+        }else{
+            delete clicked[id];
+            if(Object.keys(clicked).length === 0){
+                nextPageToken = '';
+                clearImages();
+                loadImages();
+            }else{
+                clearImages();
+                for(label in clicked){
+                    loadImagesWithLabel(label);
+                }
+            }
+        }
+        $('#clicked').html(JSON.stringify(clicked));
+    });
+}
+
+let clearImages = function(){
+    $('#imageScroller').html('');
+}
+
+let loadLabelSelector = function(){
+    fetch(`/ajax/album/${albumId}/getLabels`).then(function(res){
+        $('#labelTracker').html('');
+        return res.json();
+    }).then(function(labels){
+        console.log(labels);
+        // labels.forEach(function (label){
+        for(label in labels){
+            $('#labelTracker').append(labelSelectLoader(label));
+        }
+    }).then(function(){
+        addClickEvents();
+    });
+}
+
+let loadLabels = function(){
+    $('.imageLabels').each(function(index){
+        const id = $(this).attr('id');
+        // console.log(`index: ${index}`);
+        fetch(`/ajax/labels/${id}`).then(function(res) {
+            return res.json();
+        }).then((data) => {
+            let itemsProcessed = 0;
+            if(data.message){
+                throw "No labels";
+            }
+            console.log(data);
+            $(this).html('');
+            data.forEach((label, index, array)=>{
+                console.log(label);
+                $(this).append(`
+                    <li class="list-group-item disabled">${label}</li>
+                `);
+                itemsProcessed++;
+                // if(itemsProcessed === array.length){
+                    // let ctn = 0;
+                    // labels.forEach(function(label, index, array){
+                    //     ctn++;
+                    //     if(ctn === array.length){
+                    //         addClickEvents();
+                    //     }
+                    // });
+                // }
+            });
+        }).catch(function(err){
+        });
+    });
+};
+
+let loadImages = function(){
+    // fetch(`/ajax/photos/${albumId}/${nextPageToken}`).then(function(res){
+    return fetch(`/ajax/photos/${albumId}/${nextPageToken}`).then(function(res){
+        if(nextPageToken===''){
+            loadLabelSelector();
+            // addClickEvents();
+        }
+        return res.json();
+    }).then(function(msg){
+        let cnt = 0;
+        output = '';
+        nextPageToken = msg.nextPageToken;
+        msg.images.forEach(function(image, index, array){
+            output += imageLoader(albumId, image);
+            cnt++;
+            if(cnt === array.length){
+                $('#imageScroller').append(output);
+                addScrollEvent();
+                loadLabels();
+            }
+        });
+    });
+}
+
+let loadImagesWithLabel = function(label){
+    let url = `/ajax/photos/${albumId}/withLabel/${label}`;
+    fetch(url).then(function(res){
+        loadLabelSelector();
+        // addClickEvents();
+        return res.json();
+    }).then(function(images){
+        let output = '';
+        let cnt = 0;
+        console.log(images);
+        images.forEach(function(image, index, array){
+            output += imageLoader(albumId, image);
+            cnt++;
+            if(cnt === array.length){
+                $('#imageScroller').append(output);
+                loadLabels();
+            }
+        });
+    });
+}
+
+$(document).ready(function () {
+    // loadLabelSelector();
+    loadImages();
 });

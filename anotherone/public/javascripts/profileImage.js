@@ -5,7 +5,7 @@ let loadLabels = function(){
             const holder = $('#labels');
             holder.html('')
             res.json().then(function(data){
-                console.log(data);
+                // console.log(data);
                 data.forEach((label, index)=>{
                     holder.append(`
                         <li class="list-group-item">
@@ -43,12 +43,18 @@ function assignDelButton(){
 
 $(document).ready(function(){
     loadLabels();
+    const params = window.location.pathname;
+    const albumId = params.split('/')[3];
+    console.log(params);
 
     $('#newLabelForm').submit((e) => {
         e.preventDefault();
         fetch('/ajax/labels/'+photoId, {
             method:'post',
-            body: JSON.stringify({label: $('#newLabelInput').val()}),
+            body: JSON.stringify({
+                albumId: albumId,
+                label: $('#newLabelInput').val()
+            }),
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
             }

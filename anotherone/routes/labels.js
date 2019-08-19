@@ -3,10 +3,10 @@ const db = require('../db');
 
 router.get('/:id', (req, res) => {
     db.getDb().findOne({photoId:req.params.id}, function(err, result){
-        console.log(`
-            error: ${err},
-            result: ${result}
-        `)
+        // console.log(`
+        //     error: ${err},
+        //     result: ${result}
+        // `)
         if(err || !result){
             res.send(JSON.stringify({
                 message: "could not retrieve labels"
@@ -23,8 +23,12 @@ router.get('/:id', (req, res) => {
 
 router.post('/:id', (req,res) => {
     const newLabel = req.body.label;
+    const albumId = req.body.albumId;
     db.getDb().findOneAndUpdate(
-        {photoId: req.params.id},
+        {
+            photoId: req.params.id,
+            albumId 
+        },
         {
             $addToSet: {
                 labels: newLabel
@@ -34,6 +38,8 @@ router.post('/:id', (req,res) => {
             upsert: true
         },
         function(err, result) {
+            if(err) console.log(err);
+            console.log(JSON.stringify(result));
             res.json(result);
         });
 });

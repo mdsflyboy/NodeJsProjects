@@ -24,7 +24,7 @@
     </style>
 
     <script>
-        var nextPageToken = '<%= nextPage%>';
+        var nextPageToken = '';
         // console.log(nextPageToken);
     </script>
 </head>
@@ -59,32 +59,17 @@
             <div class="row">
                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 my-2">
                     <h4>Album Labels</h4>
-                    <ul id="labelTracker" class="list-group">
+                    <%# <ul id="labelTracker" class="list-group"> %>
+                    <div id="labelTracker" class="list-group">
+                    </div>
+                    <div id="clicked">
+                    </div>
                         <%# <li class="list-group-item">Item</li> %>
-                    </ul>
+                    <%# </ul> %>
                 </div>
                 <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div id="imageScroller" class="row pre-scrollable">
-                    <% for(image of images) { %>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            <div class="card my-1">
-                                <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image">
-                                    <img src="<%= image.baseUrl +'=w500-h300'%>" id="<%= image.id %>" class="card-img-top" alt="">
-                                </a> 
-                                <div class="card-body">
-                                    <h6>Labels:</h6>
-                                    <ul class="list-group list-group-flush py-6 imageLabels" id="<%= image.id %>">
-                                        <%# <li class="list-group-item disabled">Disabled item</li> %>
-                                    </ul>
-                                </div>
-                            </div>
-                            <% /* %>
-                            <a href="/profile/photo/<%=albumId%>/<%=image.id%>" class="image"> 
-                                <img src="<%= image.baseUrl +'=w500-h200'%>" height="100" id="<%= image.id %>" class="img-thumbnail ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|} my-1" alt=""> 
-                            </a> 
-                            <% */ %>
-                        </div>
-                    <% } %>
+
                     </div>
                 </div>
             </div>
@@ -103,5 +88,6 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="/javascripts/profileAlbum.js"></script>
+    <%# <script type="text/javascript" src="/javascripts/profileAlbum2.js"></script> %>
 </body>
 </html>
