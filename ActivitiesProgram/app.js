@@ -5,6 +5,8 @@ let app = express();
 
 app.use(express.json());
 
+app.use('/ajax/', require('./routes/ajax'));
+
 app.get('/', function(req, res){
     res.redirect('/html/index.html');
 });
