@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Residents</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container">
+        <div id="navbar"></div>
+        <div class="jumbotron">
+            <h1 class="display-3">Residents</h1>
+            <!-- <p class="lead">Jumbo helper text</p> -->
+            <hr class="my-2">
+            <!-- <p>More info</p> -->
+            <form id="newRes" class="my-3">
+              <div class="form-row">
+                <div class="col-lg col-md-12 col-sm-12 my-1">
+                  <input type="text" id="FirstName" class="form-control" placeholder="First Name">
+                </div>
+                <div class="col-lg col-md-12 col-sm-12 my-1">
+                  <input type="text" id="LastName" class="form-control" placeholder="Last Name">
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 my-1">
+                  <input type="date" id="DOB" class="form-control" placeholder="DOB">
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 my-1">
+                  <input type="text" id="RoomNumber" class="form-control" placeholder="Room Number">
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 my-1">
+                  <input name="submit" class="btn btn-primary" type="submit" value="Submit">
+                </div>
+              </div>
+            </form>
+            <ul id="tblResident" class="list-group">
+            </ul>
+        </div>
+      </div>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="/js/residents.js"></script>
+  </body>
+</html>
