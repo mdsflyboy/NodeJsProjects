@@ -3,7 +3,8 @@ const fs = require('fs');
 
 const db = require('./db');
 
-const accessToken = 'ya29.GlthB9gTZEMAF_MzRUBn1mRaVZt9kEWttnwCoEi476OupSpLfyD7g4pz0CgFGcyMLgG1YL-K0iDdho3Qq9KUillqFa-IKfVNMS7lEFNkg0D6YycmTp2XPT9vZESp';
+// const accessToken = 'ya29.GltvB52ukPBJxO73nNg94VyZErv6_igGzIq05z_FWoLtpLi7C3dfH-7qz2rDjHAnjdB21SSUexwOf4iMXTXaC9SIxOgrO2HYy046pejjAi6uL9Dw-cBJxgndZ4BG';
+const accessToken = 'ya29.GltvB5qaSnxe-2KcjA_Og-j8SG6J0vm8YrMzqUXHCAIzkpOQagFZhj8xSD4w7xURxfPVfFx_mymTFINlZLO2LzhX8dLPiCuQj3i4w52DBJ1Tl86RerwqdFizzsNU';
 
 const baseUrl = 'https://photoslibrary.googleapis.com/v1'
 
@@ -83,12 +84,13 @@ let getImagesFromAlbum =  function (accessToken, albumId, callback, pageSize=25,
                 objResult[item.photoId] = item;
                 return objResult;
             }, {});
-            console.log("resutl: ",objResult);
+            console.log("result: ",objResult);
             let output = mediaItems.map((item) => {
                 let inOutput = {
                     id:item.id,
                     productUrl:item.productUrl, 
-                    baseUrl:item.baseUrl
+                    baseUrl:item.baseUrl,
+                    mediaMetadata: item.mediaMetadata
                 };
                 if(objResult[item.id]){
                     inOutput.labels = objResult[item.id].labels;
@@ -113,6 +115,7 @@ let getPhoto = function(accessToken, photoId, callback){
     request(url, (err, res, body)=>{
         let error = checkForErrors(err, res, body);
         let photo = JSON.parse(body);
+        console.log(photo);
         photo = {id:photo.id, baseUrl:photo.baseUrl, productUrl:photo.productUrl};
         db.getDb().findOne({
             photoId: photo.id
@@ -127,9 +130,10 @@ let getPhoto = function(accessToken, photoId, callback){
     }).auth(null,null,true,accessToken);
 };
 
-// getPhoto(accessToken, "ALjsKEVpN4rMLpJeOOKVmWatWa1dC3LRJDO2S65-42pmBtFID7vsr6vE_f9KDIK-tiB4OrJZ5vlo",
+// getPhoto(accessToken, "ALjsKEVDvgcyBMSKoEPyPFu9parvpnto0YPs5Zzf5stSs8LvFwNJBj58B22LEE5HYOMyH2zABJ5AEfLoT4KLAVzWeT6pkVKWJQ",
+// getPhoto(accessToken, "APVoAXVyCOBH1rtlXo10blte76AogB6dalD0nDloPdTR5F1vi1bQq40LiXYr8E9Jx8-UnQLbf8iz",
 // function(data){
-//     console.log(data);
+    // console.log(data);
 // });
 
 module.exports = {getPhoto, getAlbums,getImagesFromAlbum};

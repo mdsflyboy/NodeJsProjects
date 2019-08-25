@@ -3,7 +3,8 @@ const ObjectID = require('mongodb').ObjectID;
 
 const dbName = "photoLabels";
 const url = "mongodb://localhost:27017";
-const collectionName = "labels";
+// const collectionName = "labels";
+const collectionName = "newLabels";
 const mongoOptions = {useNewUrlParser: true};
 
 const state = {

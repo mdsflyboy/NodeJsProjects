@@ -27,7 +27,7 @@ router.post('/:id', (req,res) => {
     db.getDb().findOneAndUpdate(
         {
             photoId: req.params.id,
-            albumId 
+            albumId
         },
         {
             $addToSet: {
